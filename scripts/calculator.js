@@ -22,6 +22,14 @@ function divide(a, b) {
 }
 
 function operate(a, b, operator) {
+    /**
+     * Calculates [a] [operator] [b].
+     * 
+     * @method operate
+     * @param {String} a First number to operate on
+     * @param {String} b Second number to operate on
+     * @return {Number} Returns the value of the operation
+     */
     switch (operator) {
         case OPERATOR_ADD:
             return add(a, b);
