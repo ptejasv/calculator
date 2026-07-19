@@ -1,6 +1,6 @@
-let currentNum = 0; // current number being updated: num0 or num1
-let num0 = num1 = 0; // values of the 2 numbers to operate on
-let operator = null; 
+let currentNum = 0; // current number being updated: nums[0] or nums[1]
+let nums = [null, null, null]; // nums[2]: result of the previous calculation
+let operator;
 
 const OPERATORS = {
     "buttonDivide": "OPERATOR_DIVIDE",
@@ -51,25 +51,25 @@ function operate(a, b, operator) {
 const display = document.querySelector(".display p");
 const buttons = document.querySelectorAll(".calc-buttons");
 
-function addToDisplay(text) {
-    display.textContent = display.textContent + text;
-}
-
 function handleDigitBtn(btnText) {
     /**
-     * Callback function for digit button press. Updates either num0 or num1 
-     * based on the value of currentNum. Displays the updated number in the 
+     * Callback function for digit button press. Updates either nums[0] or nums
+     * [1] based on the value of currentNum. Displays the updated number in the 
      * calculator console.
      * 
      * @method handleDigitBtn
      * @param {String} btnText Text content of the button that was pressed
      */
     let digit = parseInt(btnText);
-    
-    if (currentNum == 0) num0 = (num0 * 10) + digit;
-    else num1 = (num1 * 10) + digit;
 
-    addToDisplay(digit);
+    // if there is an existing result with no operator, clear it
+    if (nums[2]) {
+        nums[2] = null;
+        display.textContent = "";
+    };
+    
+    nums[currentNum] = (nums[currentNum] * 10) + digit;
+    display.textContent = display.textContent + digit;
 }
 
 function handleOpBtn(btn) {
@@ -86,7 +86,7 @@ function handleOpBtn(btn) {
         case "buttonAC":
             // reset globals
             currentNum = 0;
-            num0 = num1 = 0;
+            nums = [null, null, null];
             operator = null;
 
             // clear text
@@ -94,21 +94,27 @@ function handleOpBtn(btn) {
             break;
         case "buttonEquals":
             // get result
-            let result = operate(num0, num1, operator);
+            let result = operate(nums[0], nums[1], operator);
             display.textContent = result;
 
-            // reset globals
+            // set globals
             currentNum = 0;
-            num0 = num1 = 0;
+            nums = [null, null, result]; // store result as nums[2]
             operator = null;
 
             break;
         default:
+            if (nums[2]) {
+                // if there is a pre-existing result, use it as the first number
+                nums[0] = nums[2];
+                nums[2] = null;
+            }
+
             operator = OPERATORS[btnId];
-            addToDisplay(` ${btn.textContent} `);
+            display.textContent = display.textContent + ` ${btn.textContent} `;
 
             // swap current num being updated
-            currentNum = !currentNum;
+            currentNum === 0 ? currentNum = 1 : currentNum = 0;
     }
 }
 
