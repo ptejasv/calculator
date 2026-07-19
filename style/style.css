@@ -15,14 +15,16 @@
 
 .display {
     background-color: rgb(103, 121, 121);
-    border-radius: 16px;
-    padding: 8px;
+    border-radius: 16px 16px 0 0;
+    padding: 0 8px;
+    overflow: scroll;
 }
 
 .display p {
-    margin-bottom: 0; 
+    margin-bottom: 0;
+    min-height: 40pt;
     font-family:'Courier New', Courier, monospace;
-    font-size: 40pt;
+    font-size: 32pt;
     font-weight: bold;
     text-align: right;
     color: white;
@@ -32,6 +34,8 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
 }
 
 button {
