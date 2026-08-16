@@ -9,7 +9,8 @@ const OPERATORS = {
     "buttonPlus": "OPERATOR_ADD"
 }
 
-// basic math operators
+
+// math logic
 function add(a, b) {
     return a + b;
 }
@@ -23,8 +24,8 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    // TODO: rounding/significant digits
-    return a / b
+    if (b === 0) return "";
+    return a / b;
 }
 
 function operate(a, b, operator) {
@@ -48,6 +49,8 @@ function operate(a, b, operator) {
     }
 }
 
+
+// UI functionality
 const display = document.querySelector(".display p");
 const buttons = document.querySelectorAll(".calc-buttons");
 
@@ -93,15 +96,24 @@ function handleOpBtn(btn) {
             display.textContent = "";
             break;
         case "buttonEquals":
-            // get result
-            let result = operate(nums[0], nums[1], operator);
+            let result; 
+
+            if ((nums[0] != null & nums[1] != null) & operator != null) {
+                // both numbers and operator provided
+                // get result rounded to 4 decimal places
+                result = operate(nums[0], nums[1], operator);
+                result = Math.round(result * 1e4) / 1e4;
+            } else {
+                // incomplete input
+                result = nums[0];
+            } 
+
             display.textContent = result;
 
             // set globals
             currentNum = 0;
             nums = [null, null, result]; // store result as nums[2]
             operator = null;
-
             break;
         default:
             if (nums[2]) {
