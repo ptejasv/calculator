@@ -1,3 +1,4 @@
+// state variables
 let currentNum = 0; // current number being updated: nums[0] or nums[1]
 let nums = [null, null, null]; // nums[2]: result of the previous calculation
 let operator;
@@ -9,6 +10,7 @@ const OPERATORS = {
     "buttonPlus": "OPERATOR_ADD"
 }
 
+const MSG_DIV_0 = "Div by 0 attempted :(";
 
 // math logic
 function add(a, b) {
@@ -24,7 +26,6 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    if (b === 0) return "";
     return a / b;
 }
 
@@ -50,6 +51,13 @@ function operate(a, b, operator) {
 }
 
 function calculateResult() {
+    /**
+     * Calculates the display value when requested. If the input is incomplete 
+     * (either number or the operator is not provided), displays the first 
+     * number (if provided) or null.
+     * 
+     * @method calculateResult
+     */
     let result; 
 
     if ((nums[0] !== null & nums[1] !== null) & operator !== null) {
@@ -62,11 +70,18 @@ function calculateResult() {
         result = nums[0];
     } 
 
-    display.textContent = result;
+    if (result === Infinity) {
+        // division by 0 attempted
+        display.textContent = MSG_DIV_0;
+        nums = [null, null, null]; // reset nums
+    }
+    else {
+        display.textContent = result;
+        nums = [null, null, result]; // store result as nums[2]
+    }
 
     // set globals
     currentNum = 0;
-    nums = [null, null, result]; // store result as nums[2]
     operator = null;
 }
 
@@ -91,6 +106,8 @@ function handleDigitBtn(btnText) {
         nums[2] = null;
         display.textContent = "";
     };
+
+    if (nums[0] === null) display.textContent = ""; // ensure clear display
     
     nums[currentNum] = (nums[currentNum] * 10) + digit;
     display.textContent = display.textContent + digit;
@@ -121,8 +138,8 @@ function handleOpBtn(btn) {
             break;
         default:
             // other operator button pressed
-            
-            if (nums[0] !== null & nums[1] !== null) {
+
+            if (nums[1] !== null) {
                 // 2 numbers already entered
                 // calculate result before proceeding
                 calculateResult();
@@ -132,6 +149,12 @@ function handleOpBtn(btn) {
                 // if there is a pre-existing result, use it as the first number
                 nums[0] = nums[2];
                 nums[2] = null;
+            }
+
+            if (nums[0] === null) {
+                // if the first number has not been provided, ignore the 
+                // operator
+                break;
             }
 
             operator = OPERATORS[btnId];
