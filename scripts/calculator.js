@@ -49,6 +49,27 @@ function operate(a, b, operator) {
     }
 }
 
+function calculateResult() {
+    let result; 
+
+    if ((nums[0] !== null & nums[1] !== null) & operator !== null) {
+        // both numbers and operator provided
+        // get result rounded to 4 decimal places
+        result = operate(nums[0], nums[1], operator);
+        result = Math.round(result * 1e4) / 1e4;
+    } else {
+        // incomplete input
+        result = nums[0];
+    } 
+
+    display.textContent = result;
+
+    // set globals
+    currentNum = 0;
+    nums = [null, null, result]; // store result as nums[2]
+    operator = null;
+}
+
 
 // UI functionality
 const display = document.querySelector(".display p");
@@ -96,26 +117,17 @@ function handleOpBtn(btn) {
             display.textContent = "";
             break;
         case "buttonEquals":
-            let result; 
-
-            if ((nums[0] != null & nums[1] != null) & operator != null) {
-                // both numbers and operator provided
-                // get result rounded to 4 decimal places
-                result = operate(nums[0], nums[1], operator);
-                result = Math.round(result * 1e4) / 1e4;
-            } else {
-                // incomplete input
-                result = nums[0];
-            } 
-
-            display.textContent = result;
-
-            // set globals
-            currentNum = 0;
-            nums = [null, null, result]; // store result as nums[2]
-            operator = null;
+            calculateResult();
             break;
         default:
+            // other operator button pressed
+            
+            if (nums[0] !== null & nums[1] !== null) {
+                // 2 numbers already entered
+                // calculate result before proceeding
+                calculateResult();
+            }
+
             if (nums[2]) {
                 // if there is a pre-existing result, use it as the first number
                 nums[0] = nums[2];
